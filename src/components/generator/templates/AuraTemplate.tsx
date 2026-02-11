@@ -1,4 +1,5 @@
 import { WallpaperData } from "@/lib/types"
+import { ProgressRing } from "../ProgressRing"
 import { CSSProperties } from "react"
 
 export function AuraTemplate({ data, width, height, watermark }: { data: WallpaperData, width: number, height: number, watermark?: boolean }) {
@@ -63,7 +64,7 @@ export function AuraTemplate({ data, width, height, watermark }: { data: Wallpap
             }} />
 
             {/* Content */}
-            <div style={{ textAlign: 'center', zIndex: 10, position: 'relative' }}>
+            <div style={{ textAlign: 'center', zIndex: 10, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1 style={{
                     fontSize: '40px',
                     fontWeight: 700,
@@ -75,28 +76,46 @@ export function AuraTemplate({ data, width, height, watermark }: { data: Wallpap
                     {data.title || "AURA"}
                 </h1>
 
-                <div style={{
-                    fontSize: '200px',
-                    fontWeight: 800,
-                    lineHeight: 0.9,
-                    background: '-webkit-linear-gradient(#fff, #eee)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.1))'
-                }}>
-                    {mainDisplay}
-                </div>
+                {/* Progress Ring Wrapper */}
+                <div style={{ position: 'relative', width: width * 0.6, height: width * 0.6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {!isCountdown && (
+                        <div style={{ position: 'absolute', inset: 0 }}>
+                            <ProgressRing
+                                radius={45}
+                                stroke={6} // Thinner stroke for elegance
+                                progress={Math.min(100, Math.max(0, (data.currentValue / (data.targetValue || 1)) * 100))}
+                                color="rgba(255,255,255,0.8)"
+                                trackColor="rgba(255,255,255,0.2)"
+                                style={{ width: '100%', height: '100%' }} // Scale to container
+                            />
+                        </div>
+                    )}
 
-                <div style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginTop: '20px',
-                    background: 'rgba(255,255,255,0.2)',
-                    padding: '10px 30px',
-                    borderRadius: '50px',
-                    backdropFilter: 'blur(5px)'
-                }}>
-                    {subDisplay}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2 }}>
+                        <div style={{
+                            fontSize: '150px', // Slightly smaller to fit ring safely
+                            fontWeight: 800,
+                            lineHeight: 0.9,
+                            background: '-webkit-linear-gradient(#fff, #eee)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.1))'
+                        }}>
+                            {mainDisplay}
+                        </div>
+
+                        <div style={{
+                            fontSize: '24px',
+                            fontWeight: 600,
+                            marginTop: '20px',
+                            background: 'rgba(255,255,255,0.2)',
+                            padding: '10px 30px',
+                            borderRadius: '50px',
+                            backdropFilter: 'blur(5px)'
+                        }}>
+                            {subDisplay}
+                        </div>
+                    </div>
                 </div>
             </div>
 

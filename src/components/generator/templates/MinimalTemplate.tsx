@@ -1,4 +1,5 @@
 import { TemplateProps } from "@/lib/types"
+import { ProgressRing } from "../ProgressRing"
 
 export function MinimalTemplate({ data, width = 1080, height = 1920, scale = 1, watermark }: TemplateProps) {
     // Mobile aspect ratio is key. We scale everything based on width.
@@ -36,14 +37,13 @@ export function MinimalTemplate({ data, width = 1080, height = 1920, scale = 1, 
                 ) : (
                     <div style={{ position: "relative", width: width * 0.6, height: width * 0.6 }}>
                         {/* Simple SVG Ring */}
-                        <svg viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="#333" strokeWidth="10" />
-                            <circle
-                                cx="50" cy="50" r="45" fill="none" stroke="white" strokeWidth="10"
-                                strokeDasharray={`${Math.max(0, Math.min(100, (data.currentValue / (data.targetValue || 1)) * 100)) * 2.827} 282.7`}
-                                strokeLinecap="round"
-                            />
-                        </svg>
+                        <ProgressRing
+                            radius={45}
+                            stroke={10}
+                            progress={Math.min(100, (data.currentValue / (data.targetValue || 1)) * 100)}
+                            color="white"
+                            trackColor="#333"
+                        />
                         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
                             <span style={{ fontSize: baseFontSize * 2, fontWeight: 900 }}>{Math.round((data.currentValue / (data.targetValue || 1)) * 100)}%</span>
                             <span style={{ fontSize: baseFontSize * 0.8, opacity: 0.7 }}>{data.currentValue} / {data.targetValue}</span>

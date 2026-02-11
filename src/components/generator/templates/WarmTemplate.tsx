@@ -1,4 +1,5 @@
 import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
+import { ProgressRing } from "../ProgressRing"
 import { CSSProperties } from "react"
 import { WallpaperData } from "@/lib/types"
 
@@ -67,15 +68,30 @@ export function WarmTemplate({ data, width, height, watermark }: { data: Wallpap
                     {data.title || "GOAL TITLE"}
                 </h1>
 
-                {/* Main Number */}
-                <div style={{
-                    fontSize: '180px',
-                    fontWeight: 800,
-                    lineHeight: 1,
-                    letterSpacing: '-0.05em',
-                    textShadow: '0 4px 20px rgba(0,0,0,0.15)'
-                }}>
-                    {mainDisplay}
+                {/* Main Number + Ring */}
+                <div style={{ position: 'relative', width: width * 0.6, height: width * 0.6, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {!isCountdown && (
+                        <div style={{ position: 'absolute', inset: 0 }}>
+                            <ProgressRing
+                                radius={45}
+                                stroke={8}
+                                progress={Math.min(100, Math.max(0, (data.currentValue / (data.targetValue || 1)) * 100))}
+                                color="rgba(255,255,255,0.9)"
+                                trackColor="rgba(255,255,255,0.2)"
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                        </div>
+                    )}
+                    <div style={{
+                        fontSize: '180px',
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        letterSpacing: '-0.05em',
+                        textShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                        zIndex: 2
+                    }}>
+                        {mainDisplay}
+                    </div>
                 </div>
 
                 {/* Sub/Label */}
@@ -90,24 +106,7 @@ export function WarmTemplate({ data, width, height, watermark }: { data: Wallpap
                 </div>
             </div>
 
-            {/* Progress Bar (if Progress mode) */}
-            {!isCountdown && (
-                <div style={{
-                    width: '60%',
-                    height: '12px',
-                    background: 'rgba(255,255,255,0.3)',
-                    borderRadius: '10px',
-                    marginTop: '60px',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{
-                        height: '100%',
-                        width: `${progress}%`,
-                        background: '#FFF',
-                        borderRadius: '10px'
-                    }} />
-                </div>
-            )}
+            {/* Progress Bar (Legacy Linear) - Removed for Standard Ring Consistency */}
 
             {/* Watermark */}
             {watermark && (

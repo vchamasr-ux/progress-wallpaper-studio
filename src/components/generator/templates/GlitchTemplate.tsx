@@ -1,4 +1,5 @@
 import { WallpaperData } from "@/lib/types"
+import { ProgressRing } from "../ProgressRing"
 import { CSSProperties } from "react"
 
 export function GlitchTemplate({ data, width, height, watermark }: { data: WallpaperData, width: number, height: number, watermark?: boolean }) {
@@ -71,15 +72,29 @@ export function GlitchTemplate({ data, width, height, watermark }: { data: Wallp
                     </h1>
                 </div>
 
-                <div style={{
-                    fontSize: '220px',
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    letterSpacing: '-10px',
-                    textShadow: '4px 4px 0px rgba(255,0,0,0.5), -4px -4px 0px rgba(0,0,255,0.5)',
-                    marginLeft: '-10px'
-                }}>
-                    {mainDisplay}
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                    {!isCountdown && (
+                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: width * 0.7, height: width * 0.7, opacity: 0.3, zIndex: -1 }}>
+                            <ProgressRing
+                                radius={45}
+                                stroke={2}
+                                progress={Math.min(100, Math.max(0, (data.currentValue / (data.targetValue || 1)) * 100))}
+                                color="#00ff41"
+                                trackColor="rgba(0, 255, 65, 0.1)"
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                        </div>
+                    )}
+                    <div style={{
+                        fontSize: '220px',
+                        fontWeight: 900,
+                        lineHeight: 1,
+                        letterSpacing: '-10px',
+                        textShadow: '4px 4px 0px rgba(255,0,0,0.5), -4px -4px 0px rgba(0,0,255,0.5)',
+                        marginLeft: '-10px'
+                    }}>
+                        {mainDisplay}
+                    </div>
                 </div>
 
                 <div style={{
