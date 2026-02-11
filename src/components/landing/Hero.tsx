@@ -5,10 +5,14 @@ import { ArrowDown, Check } from "lucide-react"
 import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
 import { WallpaperData } from "@/lib/types"
 
+const today = new Date()
+const target = new Date(today)
+target.setDate(today.getDate() + 400) // Always show significant progress left
+
 const MOCK_DATA: WallpaperData = {
     mode: 'countdown',
     title: 'Bali Trip',
-    targetDate: '2024-12-31',
+    targetDate: target.toISOString().split('T')[0],
     currentValue: 0,
     targetValue: 100,
     templateId: 'minimal'

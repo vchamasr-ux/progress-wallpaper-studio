@@ -16,7 +16,7 @@ const features = [
     {
         name: 'Privacy First',
         description:
-            'No accounts. No cloud storage of your goals. No user tracking. Just a simple tool.',
+            'No accounts. No cloud storage of your goals. Minimal anonymous analytics (no goal text stored). Just a simple tool.',
         icon: Lock,
     },
 ]

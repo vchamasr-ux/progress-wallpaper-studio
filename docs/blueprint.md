@@ -32,11 +32,13 @@ V0 scope:
 - Live preview.
 - Exports:
   - Free: 1 Story-size PNG (1080×1920) with watermark
-  - Paid: iPhone pack + Android pack + Story pack, no watermark
+  - Paid: iPhone pack (3 sizes) + Android pack (3 sizes) + Story pack, no watermark
 - Stripe paywall:
-  - One-time purchase “Unlock packs” (e.g., $6.99–$9.00)
+  - One-time purchase “Unlock packs” ($6.99)
+  - Real Stripe Checkout Session (Server-side verification)
 - Instrumentation:
-  - Track landing → generate → checkout → success
+  - Minimal anonymous analytics (landing → generate → checkout → success)
+  - Privacy-first: no goal text stored
 - Launch content:
   - 12–20 ultra short clips (8–12 seconds)
 

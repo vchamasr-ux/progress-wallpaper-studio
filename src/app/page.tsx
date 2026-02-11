@@ -1,3 +1,5 @@
+"use client"
+
 import Link from 'next/link'
 import { GeneratorContainer } from "@/components/generator/GeneratorContainer"
 import { Hero } from "@/components/landing/Hero"
@@ -5,8 +7,14 @@ import { Features } from "@/components/landing/Features"
 import { HowItWorks } from "@/components/landing/HowItWorks"
 import { FAQ } from "@/components/landing/FAQ"
 import { Footer } from "@/components/landing/Footer"
+import { useEffect } from 'react'
+import { trackEvent } from "@/lib/analytics"
 
 export default function Home() {
+  useEffect(() => {
+    trackEvent('landing_view')
+  }, [])
+
   return (
     <main className="min-h-screen bg-background">
       {/* Mobile-first Header/Nav */}

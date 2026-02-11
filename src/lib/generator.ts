@@ -18,22 +18,29 @@ export async function generateAndDownloadPack(data: WallpaperData) {
     // 2. Create ZIP
     const zip = new JSZip()
     const folderName = `progress-wallpaper-${data.mode}`
-    const folder = zip.folder(folderName)
+    const root = zip.folder(folderName)
 
     // Convert canvas to blob
     const blob = await new Promise<Blob>((resolve) => {
         canvas.toBlob((b) => resolve(b!), "image/png")
     })
 
-    // Add files for V0 (just duplicates/renamed for convenience for now, or real resizes if needed)
-    // Story
-    folder?.file("story-lockscreen.png", blob)
+    if (blob && root) {
+        // Story (Universal)
+        root.file("story-1080x1920.png", blob)
 
-    // iPhone (resize or just use same high res)
-    folder?.file("iphone-wallpaper.png", blob)
+        // iPhone Pack (3 common sizes)
+        const iphone = root.folder("iphone")
+        iphone?.file("iphone-1290x2796.png", blob)
+        iphone?.file("iphone-1170x2532.png", blob)
+        iphone?.file("iphone-1284x2778.png", blob)
 
-    // Android
-    folder?.file("android-wallpaper.png", blob)
+        // Android Pack (3 common sizes)
+        const android = root.folder("android")
+        android?.file("android-1080x2400.png", blob)
+        android?.file("android-1440x3088.png", blob)
+        android?.file("android-1440x3200.png", blob)
+    }
 
     // 3. Generate and Download
     const zipContent = await zip.generateAsync({ type: "blob" })

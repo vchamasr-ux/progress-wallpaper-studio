@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { INITIAL_DATA, WallpaperData, GeneratorMode } from "@/lib/types"
 import { ModeSelector } from "./ModeSelector"
 import { TemplateSelector } from "./TemplateSelector"
@@ -10,11 +10,35 @@ import { Download, Loader2, Lock, Check } from "lucide-react"
 import { generateAndDownloadPack } from "@/lib/generator"
 import { MinimalTemplate } from "./templates/MinimalTemplate"
 import { DownloadHub } from "./DownloadHub"
+import { trackEvent } from "@/lib/analytics"
 
 export function GeneratorContainer() {
     const [data, setData] = useState<WallpaperData>(INITIAL_DATA)
     const [isGenerating, setIsGenerating] = useState(false)
     const [hasPaid, setHasPaid] = useState(false)
+    const [isCheckingOut, setIsCheckingOut] = useState(false)
+    const [isVerifying, setIsVerifying] = useState(false)
+
+    // Verify session on mount if present
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search)
+        const sessionId = query.get("session_id")
+        if (sessionId) {
+            setIsVerifying(true)
+            fetch(`/api/stripe/verify-session?session_id=${sessionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.verified) {
+                        setHasPaid(true)
+                        trackEvent('checkout_success')
+                        // Clean URL
+                        window.history.replaceState({}, "", window.location.pathname)
+                    }
+                })
+                .catch(err => console.error(err))
+                .finally(() => setIsVerifying(false))
+        }
+    }, [])
 
     const handleModeChange = (newMode: GeneratorMode) => {
         setData((prev) => ({ ...prev, mode: newMode }))
@@ -26,6 +50,12 @@ export function GeneratorContainer() {
 
     const handleDownload = async () => {
         try {
+            if (hasPaid) {
+                trackEvent('download_pro_clicked', { mode: data.mode })
+            } else {
+                trackEvent('download_orig_clicked', { mode: data.mode })
+            }
+
             setIsGenerating(true)
             // Small delay to allow react to render any pending state if needed
             await new Promise(resolve => setTimeout(resolve, 100))
@@ -35,6 +65,44 @@ export function GeneratorContainer() {
             alert("Failed to generate pack. Please try again.")
         } finally {
             setIsGenerating(false)
+        }
+    }
+
+    const handleUnlock = async () => {
+        // DEV BYPASS: If no keys configured, allow unlock for testing
+        // Remove this before real production traffic if stricter security needed
+        // but safe for V0 demo.
+        if (process.env.NODE_ENV === 'development') {
+            console.log("[DEV MODE] Stripe keys missing. Simulating success.")
+            setHasPaid(true)
+            trackEvent('checkout_success', { dev: true })
+            return
+        }
+
+        trackEvent('checkout_started', { mode: data.mode })
+        setIsCheckingOut(true)
+        try {
+            const res = await fetch("/api/stripe/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    successUrl: window.location.href.split('?')[0], // Base URL
+                    cancelUrl: window.location.href
+                })
+            })
+            const { url, error } = await res.json()
+            if (error) {
+                alert("Checkout error: " + error)
+                setIsCheckingOut(false)
+                return
+            }
+            if (url) {
+                window.location.href = url
+            }
+        } catch (e) {
+            console.error(e)
+            alert("Something went wrong")
+            setIsCheckingOut(false)
         }
     }
 
@@ -116,16 +184,13 @@ export function GeneratorContainer() {
                         ) : (
                             <div className="space-y-4">
                                 <Button
-                                    onClick={() => {
-                                        // Placeholder for Stripe
-                                        const confirm = window.confirm("This would go to Stripe ($6.99). Unlock for demo?")
-                                        if (confirm) setHasPaid(true)
-                                    }}
+                                    onClick={handleUnlock}
+                                    disabled={isCheckingOut || isVerifying}
                                     className="w-full h-12 text-lg gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 border-0"
                                     size="lg"
                                 >
-                                    <Lock className="h-4 w-4" />
-                                    Unlock Pro Pack ($6.99)
+                                    {isCheckingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+                                    {isCheckingOut ? "Redirecting..." : isVerifying ? "Verifying..." : "Unlock Pro Pack ($6.99)"}
                                 </Button>
 
                                 <div className="space-y-2 rounded-lg bg-muted/50 p-4">

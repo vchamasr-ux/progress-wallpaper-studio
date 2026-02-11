@@ -31,20 +31,19 @@
 
 ### A4) Rendering & export engine (deterministic)
 - [ ] Implement template renderer (canvas or SVG)
-- [ ] Export Story PNG (1080×1920)
-- [ ] Export iPhone PNGs (3 sizes minimum)
-- [ ] Export Android PNGs (3 sizes minimum)
-- [ ] ZIP creation for iPhone + Android packs
-- [ ] Watermark toggle for free tier
+- [x] Export Story PNG (1080×1920)
+- [ ] Export iPhone PNGs (3 sizes: 1290x2796, 1170x2532, 1284x2778)
+- [ ] Export Android PNGs (3 sizes: 1080x2400, 1440x3088, 1440x3200)
+- [x] ZIP creation for iPhone + Android packs
+- [x] Watermark toggle for free tier
 
 ### A5) Paywall + download gating
-- [ ] “Checkout” button opens Stripe payment link/checkout
-- [ ] Success redirect returns to /download with session id
-- [ ] Server verifies payment success
-- [ ] Mint short-lived download token
+- [ ] “Unlock” button calls `POST /api/stripe/create-checkout-session`
+- [ ] Success redirect returns to /?session_id=...
+- [ ] Client calls `GET /api/stripe/verify-session` to unlock
 - [ ] Download hub:
-  - [ ] iPhone ZIP (locked unless paid)
-  - [ ] Android ZIP (locked unless paid)
+  - [ ] iPhone ZIP (locked unless verified)
+  - [ ] Android ZIP (locked unless verified)
   - [ ] Story PNG (free; paid removes watermark)
 
 ### A6) Analytics for validation
