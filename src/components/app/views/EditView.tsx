@@ -8,6 +8,18 @@ import { Button } from "@/components/ui/button"
 import { Save, ArrowRight } from "lucide-react"
 import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
 import { WarmTemplate } from "@/components/generator/templates/WarmTemplate"
+import { AuraTemplate } from "@/components/generator/templates/AuraTemplate"
+import { GlitchTemplate } from "@/components/generator/templates/GlitchTemplate"
+
+const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
+    minimal: MinimalTemplate,
+    warm: WarmTemplate,
+    aura: AuraTemplate,
+    glitch: GlitchTemplate,
+    // Add others if implemented, else fallback
+    bold: MinimalTemplate,
+    neon: MinimalTemplate
+}
 
 interface EditViewProps {
     initialGoal: Goal
@@ -31,12 +43,14 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
         setData((prev) => ({ ...prev, mode: newMode }))
     }
 
+    const SelectedTemplate = TEMPLATE_MAP[data.templateId] || MinimalTemplate
+
     return (
         <div className="grid gap-8 pb-20"> {/* pb-20 for safe area if we had bottom nav, but good spacing anyway */}
             <div className="space-y-6">
                 {/* Preview Section - Sticky on Desktop, visible on Mobile */}
                 <div className="sticky top-0 bg-background/80 backdrop-blur-md z-10 py-4 -mx-4 px-4 border-b lg:static lg:bg-transparent lg:border-0 lg:p-0">
-                    <PreviewPanel data={data} customTemplate={data.templateId === 'warm' ? WarmTemplate : undefined} />
+                    <PreviewPanel data={data} customTemplate={SelectedTemplate} />
                 </div>
 
                 <div className="space-y-6 rounded-xl border bg-card p-6 shadow-sm">

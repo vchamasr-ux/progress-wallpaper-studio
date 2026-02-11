@@ -5,6 +5,17 @@ import { Download, Loader2, Smartphone, MonitorSmartphone, Share2, Check } from 
 import { generateExport, ExportTarget } from "@/lib/generator"
 import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
 import { WarmTemplate } from "@/components/generator/templates/WarmTemplate"
+import { AuraTemplate } from "@/components/generator/templates/AuraTemplate"
+import { GlitchTemplate } from "@/components/generator/templates/GlitchTemplate"
+
+const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
+    minimal: MinimalTemplate,
+    warm: WarmTemplate,
+    aura: AuraTemplate,
+    glitch: GlitchTemplate,
+    bold: MinimalTemplate,
+    neon: MinimalTemplate
+}
 
 interface DownloadsViewProps {
     goal: Goal
@@ -15,7 +26,7 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
     const [isProUnlocked, setIsProUnlocked] = useState(false)
 
     // Handle Template rendering for capture
-    const TemplateComponent = goal.templateId === 'warm' ? WarmTemplate : MinimalTemplate
+    const TemplateComponent = TEMPLATE_MAP[goal.templateId] || MinimalTemplate
 
     const handleDownload = async (target: ExportTarget) => {
         setIsGenerating(target)
