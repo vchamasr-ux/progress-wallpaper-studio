@@ -20,30 +20,37 @@ const SEED_GOALS: Goal[] = [
         createdAt: Date.now(),
         mode: "progress",
         title: "30 Workouts",
-        currentValue: 0,
+        currentValue: 12,
         targetValue: 30,
         targetDate: "",
-        templateId: "minimal"
+        templateId: "punch-minimal" // Updated to new default
     },
     {
         id: "seed-2",
         createdAt: Date.now() - 1000,
         mode: "progress",
         title: "Read 12 Books",
-        currentValue: 0,
+        currentValue: 3,
         targetValue: 12,
         targetDate: "",
-        templateId: "bold"
+        templateId: "punch-warm"
     },
     {
         id: "seed-3",
         createdAt: Date.now() - 2000,
         mode: "countdown",
-        title: "Trip Countdown",
+        title: "Bali Trip", // Countdown should ideally work with punch too?
+        // PunchCardGrid logic: if countdown, we need total days vs days passed?
+        // Current Punch templates use data.targetValue and data.currentValue.
+        // If mode is countdown, we need to map days left to these?
+        // The templates currently just render the grid based on targetValue/currentValue.
+        // For countdowns, we might want to stick to a different template or map it.
+        // Let's stick to "Trip Countdown" using "warm" (Classic) for now as punch cards are best for progress.
+        // Or better: "punch-neon" with manual mapping?
+        // Let's keep one classic for variety: "warm".
         currentValue: 0,
-        targetValue: 0,
-        // Future safe: 30 days from now
-        targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        targetValue: 100,
+        targetDate: "2024-12-31",
         templateId: "warm"
     }
 ]
@@ -115,8 +122,8 @@ export function AppContainer() {
                             key={view}
                             onClick={() => setActiveView(view)}
                             className={`text-sm font-medium py-2 rounded-md transition-all ${activeView === view
-                                    ? "bg-background shadow-sm text-foreground"
-                                    : "text-muted-foreground hover:text-foreground"
+                                ? "bg-background shadow-sm text-foreground"
+                                : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
                             {view.charAt(0).toUpperCase() + view.slice(1)}

@@ -28,7 +28,7 @@ export function AuraTemplate({ data, width, height, watermark }: { data: Wallpap
         width,
         height,
         backgroundColor: '#E0C3FC',
-        backgroundColor: '#E0C3FC',
+
         // CSS Mesh Gradient
         backgroundImage: `
             radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),

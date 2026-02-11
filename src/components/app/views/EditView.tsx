@@ -11,7 +11,14 @@ import { WarmTemplate } from "@/components/generator/templates/WarmTemplate"
 import { AuraTemplate } from "@/components/generator/templates/AuraTemplate"
 import { GlitchTemplate } from "@/components/generator/templates/GlitchTemplate"
 
+import { PunchMinimal } from "@/components/generator/templates/PunchMinimal"
+import { PunchWarm } from "@/components/generator/templates/PunchWarm"
+import { PunchNeon } from "@/components/generator/templates/PunchNeon"
+
 const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
+    "punch-minimal": PunchMinimal,
+    "punch-warm": PunchWarm,
+    "punch-neon": PunchNeon,
     minimal: MinimalTemplate,
     warm: WarmTemplate,
     aura: AuraTemplate,
@@ -43,7 +50,7 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
         setData((prev) => ({ ...prev, mode: newMode }))
     }
 
-    const SelectedTemplate = TEMPLATE_MAP[data.templateId] || MinimalTemplate
+    const SelectedTemplate = TEMPLATE_MAP[data.templateId] || PunchMinimal
 
     return (
         <div className="grid gap-8 pb-20"> {/* pb-20 for safe area if we had bottom nav, but good spacing anyway */}

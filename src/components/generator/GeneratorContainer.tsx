@@ -7,10 +7,10 @@ import { TemplateSelector } from "./TemplateSelector"
 import { PreviewPanel } from "./PreviewPanel"
 import { Button } from "@/components/ui/button"
 import { Download, Loader2, Lock, Check } from "lucide-react"
-import { generateAndDownloadPack } from "@/lib/generator"
+import { generateExport } from "@/lib/generator"
 import { MinimalTemplate } from "./templates/MinimalTemplate"
 import { DownloadHub } from "./DownloadHub"
-import { trackEvent } from "@/lib/analytics"
+import { track } from "@/lib/analytics"
 
 export function GeneratorContainer() {
     const [data, setData] = useState<WallpaperData>(INITIAL_DATA)
@@ -30,7 +30,7 @@ export function GeneratorContainer() {
                 .then(data => {
                     if (data.verified) {
                         setHasPaid(true)
-                        trackEvent('checkout_success')
+                        track('checkout_success')
                         // Clean URL
                         window.history.replaceState({}, "", window.location.pathname)
                     }
@@ -51,15 +51,15 @@ export function GeneratorContainer() {
     const handleDownload = async () => {
         try {
             if (hasPaid) {
-                trackEvent('download_pro_clicked', { mode: data.mode })
+                track('generate_clicked', { variant: data.mode }) // Using generic generate event
             } else {
-                trackEvent('download_orig_clicked', { mode: data.mode })
+                track('free_export_downloaded', { variant: data.mode })
             }
 
             setIsGenerating(true)
             // Small delay to allow react to render any pending state if needed
             await new Promise(resolve => setTimeout(resolve, 100))
-            await generateAndDownloadPack(data)
+            await generateExport(data, 'zip')
         } catch (error) {
             console.error("Export failed", error)
             alert("Failed to generate pack. Please try again.")
@@ -75,11 +75,11 @@ export function GeneratorContainer() {
         if (process.env.NODE_ENV === 'development') {
             console.log("[DEV MODE] Stripe keys missing. Simulating success.")
             setHasPaid(true)
-            trackEvent('checkout_success', { dev: true })
+            track('checkout_success')
             return
         }
 
-        trackEvent('checkout_started', { mode: data.mode })
+        track('unlock_clicked', { variant: data.mode })
         setIsCheckingOut(true)
         try {
             const res = await fetch("/api/stripe/create-checkout-session", {

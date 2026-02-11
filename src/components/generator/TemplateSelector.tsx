@@ -7,12 +7,11 @@ interface TemplateSelectorProps {
 }
 
 const TEMPLATES = [
-    { id: "minimal", name: "Minimal", color: "bg-zinc-900" },
-    { id: "bold", name: "Bold", color: "bg-blue-600" },
-    { id: "neon", name: "Neon", color: "bg-fuchsia-600" },
-    { id: "warm", name: "Warm", color: "bg-gradient-to-br from-pink-300 to-pink-500" },
-    { id: "aura", name: "Aura", color: "bg-gradient-to-tr from-indigo-300 via-purple-300 to-pink-300" },
-    { id: "glitch", name: "Glitch", color: "bg-black border-2 border-green-500" },
+    { id: "punch-minimal", name: "Punch Mono", color: "bg-zinc-900" },
+    { id: "punch-warm", name: "Punch Warm", color: "bg-gradient-to-br from-red-300 to-amber-300" },
+    { id: "punch-neon", name: "Punch Neon", color: "bg-zinc-950 border border-fuchsia-500" },
+    { id: "minimal", name: "Classic Mono", color: "bg-zinc-700" }, // Keep for legacy
+    { id: "warm", name: "Classic Warm", color: "bg-gradient-to-br from-pink-300 to-pink-500" },
 ]
 
 export function TemplateSelector({ selectedId, onSelect }: TemplateSelectorProps) {
