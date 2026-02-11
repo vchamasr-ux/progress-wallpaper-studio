@@ -3,9 +3,10 @@ import { MinimalTemplate } from "./templates/MinimalTemplate"
 
 interface PreviewPanelProps {
     data: WallpaperData
+    customTemplate?: React.ComponentType<any>
 }
 
-export function PreviewPanel({ data }: PreviewPanelProps) {
+export function PreviewPanel({ data, customTemplate: CustomTemplate }: PreviewPanelProps) {
     // Mobile standard is ~360px wide in preview
     const PREVIEW_WIDTH = 300
     const PREVIEW_HEIGHT = (300 * 16) / 9 // ~533
@@ -26,10 +27,12 @@ export function PreviewPanel({ data }: PreviewPanelProps) {
                 overflow: 'hidden',
                 borderRadius: '2rem'
             }}>
-                {/* Template Switcher Logic (rudimentary for now) */}
-                {data.templateId === 'minimal' && <MinimalTemplate data={data} scale={SCALE} />}
-                {/* Fallback to Minimal if others not ready */}
-                {data.templateId !== 'minimal' && <MinimalTemplate data={data} scale={SCALE} />}
+                {/* Template Rendering */}
+                {CustomTemplate ? (
+                    <CustomTemplate data={data} width={1080} height={1920} scale={SCALE} />
+                ) : (
+                    <MinimalTemplate data={data} width={1080} height={1920} scale={SCALE} />
+                )}
             </div>
 
             {/* Overlay for time/date simulation (optional) */}

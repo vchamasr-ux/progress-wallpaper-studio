@@ -34,10 +34,14 @@ export default function Home() {
       <section id="generator" className="py-24 bg-zinc-50 dark:bg-zinc-900 border-t border-b">
         <div className="max-w-7xl mx-auto px-6 text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">Ready to commit?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Create your custom lock screen below.</p>
-        </div>
-        <div className="max-w-5xl mx-auto px-6">
-          <GeneratorContainer />
+          <p className="mt-4 text-lg text-muted-foreground mb-8">Design your custom lock screen in our dedicated studio.</p>
+
+          <Link
+            href="/app"
+            className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground text-lg font-semibold h-14 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+          >
+            Launch Studio
+          </Link>
         </div>
       </section>
 

@@ -10,6 +10,7 @@ const TEMPLATES = [
     { id: "minimal", name: "Minimal", color: "bg-zinc-900" },
     { id: "bold", name: "Bold", color: "bg-blue-600" },
     { id: "neon", name: "Neon", color: "bg-fuchsia-600" },
+    { id: "warm", name: "Warm", color: "bg-gradient-to-br from-pink-300 to-pink-500" },
 ]
 
 export function TemplateSelector({ selectedId, onSelect }: TemplateSelectorProps) {
