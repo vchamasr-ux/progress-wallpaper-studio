@@ -28,11 +28,12 @@ const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
 
 interface DownloadsViewProps {
     goal: Goal
+    isProMode: boolean
+    setIsProMode: (v: boolean) => void
 }
 
-export function DownloadsView({ goal }: DownloadsViewProps) {
+export function DownloadsView({ goal, isProMode, setIsProMode }: DownloadsViewProps) {
     const [isGenerating, setIsGenerating] = useState<ExportTarget | null>(null)
-    const [isProUnlocked, setIsProUnlocked] = useState(false)
     const [device, setDevice] = useState<DeviceType>('iphone')
 
     const TemplateComponent = TEMPLATE_MAP[goal.templateId] || PunchCardTemplate
@@ -102,23 +103,11 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
                 </Button>
             </div>
 
-            {/* Advanced */}
-            <div className="pt-4 border-t">
-                <button
-                    onClick={() => handleAction('zip')}
-                    disabled={!!isGenerating}
-                    className="flex items-center justify-center w-full text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"
-                >
-                    {isGenerating === 'zip' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                    Advanced: Download Full ZIP Pack
-                </button>
-            </div>
-
             {/* Pro Status Card */}
             <div className="bg-gradient-to-br from-zinc-100 to-zinc-50 dark:from-zinc-900 dark:to-zinc-950 rounded-xl p-6 border space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="font-semibold text-lg">Member Status</div>
-                    {isProUnlocked ? (
+                    {isProMode ? (
                         <div className="flex items-center gap-1.5 text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-full border border-green-200 dark:border-green-900">
                             <Check className="w-3 h-3" /> PRO ACTIVE
                         </div>
@@ -131,21 +120,12 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
 
                 <div className="space-y-3">
                     <div className="flex items-start gap-3 text-sm">
-                        <div className={`mt-0.5 p-1 rounded-full ${isProUnlocked ? 'bg-green-100 dark:bg-green-900/40 text-green-600' : 'bg-muted text-muted-foreground'}`}>
-                            {isProUnlocked ? <Check className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                        <div className={`mt-0.5 p-1 rounded-full ${isProMode ? 'bg-green-100 dark:bg-green-900/40 text-green-600' : 'bg-muted text-muted-foreground'}`}>
+                            {isProMode ? <Check className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                         </div>
                         <div>
                             <div className="font-medium">Watermark Removal</div>
                             <div className="text-muted-foreground text-xs">Clean, professional look</div>
-                        </div>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                        <div className="mt-0.5 p-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600">
-                            <Check className="w-3 h-3" />
-                        </div>
-                        <div>
-                            <div className="font-medium">Unlimited Exports</div>
-                            <div className="text-muted-foreground text-xs">Save as many updates as you need</div>
                         </div>
                     </div>
                 </div>
@@ -157,8 +137,8 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
                     <input
                         type="checkbox"
                         id="dev-unlock"
-                        checked={isProUnlocked}
-                        onChange={(e) => setIsProUnlocked(e.target.checked)}
+                        checked={isProMode}
+                        onChange={(e) => setIsProMode(e.target.checked)}
                         className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
                     <label htmlFor="dev-unlock" className="text-sm font-medium text-yellow-600 dark:text-yellow-400 cursor-pointer">
@@ -174,7 +154,7 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
                         data={goal}
                         width={1080}
                         height={1920}
-                        watermark={!isProUnlocked}
+                        watermark={!isProMode}
                     />
                 </div>
             </div>

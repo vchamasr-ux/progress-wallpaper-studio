@@ -46,10 +46,10 @@ export function PunchCardTemplate({ data, width, height, scale, watermark }: Pun
                 }} />
             )}
 
-            {/* Title — safe zone top 15% */}
+            {/* Title — safe zone top 25% (below clock) */}
             <div style={{
                 position: 'absolute',
-                top: '15%',
+                top: '25%',
                 textAlign: 'center',
                 zIndex: 2,
                 padding: '0 60px',
@@ -77,8 +77,8 @@ export function PunchCardTemplate({ data, width, height, scale, watermark }: Pun
                 </p>
             </div>
 
-            {/* Punch Card Grid — center */}
-            <div style={{ transform: 'scale(1.5)', zIndex: 2 }}>
+            {/* Punch Card Grid — center, slightly reduced scale */}
+            <div style={{ transform: 'scale(1.3)', zIndex: 2, marginTop: '10%' }}>
                 <PunchCardGrid
                     total={data.targetValue}
                     filled={data.currentValue}
@@ -89,10 +89,10 @@ export function PunchCardTemplate({ data, width, height, scale, watermark }: Pun
                 />
             </div>
 
-            {/* Footer — safe zone bottom 15% */}
+            {/* Footer — safe zone bottom 12% */}
             <div style={{
                 position: 'absolute',
-                bottom: '15%',
+                bottom: '12%',
                 textAlign: 'center',
                 zIndex: 2,
             }}>

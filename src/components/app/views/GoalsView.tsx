@@ -10,13 +10,14 @@ interface GoalsViewProps {
     onSelect: (id: string) => void
     onDelete: (id: string) => void
     onCreateFromPreset: (preset: Preset) => void
+    isProMode: boolean
 }
 
-export function GoalsView({ goals, onCreate, onSelect, onDelete, onCreateFromPreset }: GoalsViewProps) {
+export function GoalsView({ goals, onCreate, onSelect, onDelete, onCreateFromPreset, isProMode }: GoalsViewProps) {
     return (
         <div className="space-y-6">
             {/* Preset Gallery — Quick Start */}
-            <PresetGallery onSelectPreset={onCreateFromPreset} />
+            <PresetGallery onSelectPreset={onCreateFromPreset} isProMode={isProMode} />
 
             {/* Divider */}
             <div className="relative">

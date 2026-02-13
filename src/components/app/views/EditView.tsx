@@ -33,9 +33,10 @@ interface EditViewProps {
     initialGoal: Goal
     onSave: (goal: Goal) => void
     onGenerate: (goal: Goal) => void
+    isProMode: boolean
 }
 
-export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
+export function EditView({ initialGoal, onSave, onGenerate, isProMode }: EditViewProps) {
     const [data, setData] = useState<Goal>(initialGoal)
 
     // Sync state if initialGoal changes (e.g. selecting different goal)
@@ -58,7 +59,7 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
             <div className="space-y-6">
                 {/* Preview Section */}
                 <div className="sticky top-0 bg-background/80 backdrop-blur-md z-10 py-4 -mx-4 px-4 border-b lg:static lg:bg-transparent lg:border-0 lg:p-0">
-                    <PreviewPanel data={data} customTemplate={SelectedTemplate} />
+                    <PreviewPanel data={data} customTemplate={SelectedTemplate} watermark={!isProMode} />
                 </div>
 
                 <div className="space-y-6 rounded-xl border bg-card p-6 shadow-sm">
@@ -123,6 +124,7 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
                     <ThemeSelector
                         selectedThemeId={data.themeId || "miami-neon"}
                         onSelect={(id) => updateField("themeId", id)}
+                        isProMode={isProMode}
                     />
 
                     {/* Template Selector (for legacy / classic templates) */}

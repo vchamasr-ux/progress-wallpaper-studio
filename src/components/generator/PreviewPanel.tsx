@@ -4,9 +4,10 @@ import { MinimalTemplate } from "./templates/MinimalTemplate"
 interface PreviewPanelProps {
     data: WallpaperData
     customTemplate?: React.ComponentType<any>
+    watermark?: boolean
 }
 
-export function PreviewPanel({ data, customTemplate: CustomTemplate }: PreviewPanelProps) {
+export function PreviewPanel({ data, customTemplate: CustomTemplate, watermark }: PreviewPanelProps) {
     // Mobile standard is ~360px wide in preview
     const PREVIEW_WIDTH = 300
     const PREVIEW_HEIGHT = (300 * 16) / 9 // ~533
@@ -29,9 +30,9 @@ export function PreviewPanel({ data, customTemplate: CustomTemplate }: PreviewPa
             }}>
                 {/* Template Rendering */}
                 {CustomTemplate ? (
-                    <CustomTemplate data={data} width={1080} height={1920} scale={SCALE} />
+                    <CustomTemplate data={data} width={1080} height={1920} scale={SCALE} watermark={watermark} />
                 ) : (
-                    <MinimalTemplate data={data} width={1080} height={1920} scale={SCALE} />
+                    <MinimalTemplate data={data} width={1080} height={1920} scale={SCALE} watermark={watermark} />
                 )}
             </div>
 

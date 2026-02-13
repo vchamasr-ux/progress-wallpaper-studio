@@ -1,8 +1,7 @@
 import html2canvas from "html2canvas"
-import JSZip from "jszip"
 import { WallpaperData } from "@/lib/types"
 
-export type ExportTarget = 'lockscreen' | 'story' | 'zip'
+export type ExportTarget = 'lockscreen' | 'story'
 export type DeviceType = 'iphone' | 'android'
 
 export async function generateExport(data: WallpaperData, target: ExportTarget, device: DeviceType = 'iphone') {
@@ -50,34 +49,13 @@ export async function generateExport(data: WallpaperData, target: ExportTarget, 
 
     if (!blob) throw new Error("Failed to generate image blob")
 
+    if (!blob) throw new Error("Failed to generate image blob")
+
     const folderName = `punch-card-${data.mode}`
-    let downloadUrl = ""
-    let downloadFilename = ""
 
-    if (target === 'zip') {
-        const zip = new JSZip()
-        const root = zip.folder(folderName)
-
-        // Add variations (Simulated via same blob for now to save compute, 
-        // real app would re-render for distinct ratios)
-        // For accurate ratios we'd need to re-render. 
-        // For this task, "Save Lock Screen" is priority.
-        // We'll put the single blob in ZIP for now to pass "Verified".
-
-        const iphone = root?.folder("iphone")
-        iphone?.file(`iphone-1290x2796.png`, blob)
-
-        const android = root?.folder("android")
-        android?.file(`android-1080x2400.png`, blob)
-
-        const zipContent = await zip.generateAsync({ type: "blob" })
-        downloadUrl = URL.createObjectURL(zipContent)
-        downloadFilename = `${folderName}-pack.zip`
-    } else {
-        // Single Image
-        downloadUrl = URL.createObjectURL(blob)
-        downloadFilename = `${folderName}-${device}-${target}.png`
-    }
+    // Single Image
+    const downloadUrl = URL.createObjectURL(blob)
+    const downloadFilename = `${folderName}-${device}-${target}.png`
 
     // Trigger Download / Share
     // For mobile "Share", we need Web Share API with File.

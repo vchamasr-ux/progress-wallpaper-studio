@@ -56,6 +56,7 @@ export function AppContainer() {
     const [activeView, setActiveView] = useState<AppView>('goals')
     const [goals, setGoals] = useState<Goal[]>(SEED_GOALS)
     const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null)
+    const [isProMode, setIsProMode] = useState(false)
 
     const activeGoal = goals.find(g => g.id === selectedGoalId) || goals[0]
 
