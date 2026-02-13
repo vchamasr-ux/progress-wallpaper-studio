@@ -1,27 +1,29 @@
 import { useState } from "react"
 import { Goal } from "../AppContainer"
 import { Button } from "@/components/ui/button"
-import { Download, Loader2, Share2, Smartphone, Check, Lock, ChevronDown } from "lucide-react"
+import { Download, Loader2, Share2, Smartphone, Check, Lock } from "lucide-react"
 import { generateExport, ExportTarget, DeviceType } from "@/lib/generator"
-import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
+import { track } from "@/lib/analytics"
+
 // Templates
-import { PunchMinimal } from "@/components/generator/templates/PunchMinimal"
-import { PunchWarm } from "@/components/generator/templates/PunchWarm"
-import { PunchNeon } from "@/components/generator/templates/PunchNeon"
+import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
 import { WarmTemplate } from "@/components/generator/templates/WarmTemplate"
 import { AuraTemplate } from "@/components/generator/templates/AuraTemplate"
 import { GlitchTemplate } from "@/components/generator/templates/GlitchTemplate"
+import { PunchCardTemplate } from "@/components/generator/templates/PunchCardTemplate"
 
 const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
-    "punch-minimal": PunchMinimal,
-    "punch-warm": PunchWarm,
-    "punch-neon": PunchNeon,
+    "punch-card": PunchCardTemplate,
     minimal: MinimalTemplate,
     warm: WarmTemplate,
     aura: AuraTemplate,
     glitch: GlitchTemplate,
     bold: MinimalTemplate,
-    neon: MinimalTemplate
+    neon: MinimalTemplate,
+    // Legacy punch IDs → redirect to universal
+    "punch-minimal": PunchCardTemplate,
+    "punch-warm": PunchCardTemplate,
+    "punch-neon": PunchCardTemplate,
 }
 
 interface DownloadsViewProps {
@@ -33,19 +35,11 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
     const [isProUnlocked, setIsProUnlocked] = useState(false)
     const [device, setDevice] = useState<DeviceType>('iphone')
 
-    // Handle Template rendering for capture
-    const TemplateComponent = TEMPLATE_MAP[goal.templateId] || PunchMinimal
-
-    // Check if current template is a "Pro" template (all except Minimal are "Pro" effectively in this model?)
-    // Prompt says: "Free: limited templates + watermark".
-    // Let's say PunchMinimal is Free, others are Pro?
-    // Or maybe just Watermark is the main differentiator for now.
-    // "Pro: all templates + no watermark + advanced exports"
-    // So Free has watermark.
+    const TemplateComponent = TEMPLATE_MAP[goal.templateId] || PunchCardTemplate
 
     const handleAction = async (target: ExportTarget) => {
+        track('free_export_downloaded', { variant: target })
         setIsGenerating(target)
-        // Delay to allow UI to update
         await new Promise(resolve => setTimeout(resolve, 100))
         try {
             await generateExport(goal, target, device)
@@ -108,7 +102,7 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
                 </Button>
             </div>
 
-            {/* Advanced / Legacy */}
+            {/* Advanced */}
             <div className="pt-4 border-t">
                 <button
                     onClick={() => handleAction('zip')}
@@ -146,11 +140,11 @@ export function DownloadsView({ goal }: DownloadsViewProps) {
                         </div>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                        <div className={`mt-0.5 p-1 rounded-full ${isProUnlocked ? 'bg-green-100 dark:bg-green-900/40 text-green-600' : 'bg-green-100 dark:bg-green-900/40 text-green-600'}`}>
+                        <div className="mt-0.5 p-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600">
                             <Check className="w-3 h-3" />
                         </div>
                         <div>
-                            <div className="font-medium">Unimited Exports</div>
+                            <div className="font-medium">Unlimited Exports</div>
                             <div className="text-muted-foreground text-xs">Save as many updates as you need</div>
                         </div>
                     </div>

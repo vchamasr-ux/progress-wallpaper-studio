@@ -29,8 +29,10 @@ export function PunchNeon({ data, width, height, watermark }: { data: WallpaperD
                 <PunchCardGrid
                     total={data.targetValue}
                     filled={data.currentValue}
-                    color="bg-fuchsia-500 shadow-[0_0_10px_rgba(217,70,239,0.8)]"
-                    emptyColor="bg-zinc-800 border-zinc-700"
+                    filledColor="#d946ef"
+                    emptyColor="rgba(39,39,42,1)"
+                    glow="0 0 10px rgba(217,70,239,0.8)"
+
                     shape="square"
                 />
             </div>

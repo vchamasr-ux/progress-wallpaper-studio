@@ -1,5 +1,5 @@
-import { WallpaperData } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { THEMES } from "@/lib/themes"
 
 interface TemplateSelectorProps {
     selectedId: string
@@ -7,10 +7,12 @@ interface TemplateSelectorProps {
 }
 
 const TEMPLATES = [
-    { id: "punch-minimal", name: "Punch Mono", color: "bg-zinc-900" },
-    { id: "punch-warm", name: "Punch Warm", color: "bg-gradient-to-br from-red-300 to-amber-300" },
-    { id: "punch-neon", name: "Punch Neon", color: "bg-zinc-950 border border-fuchsia-500" },
-    { id: "minimal", name: "Classic Mono", color: "bg-zinc-700" }, // Keep for legacy
+    {
+        id: "punch-card",
+        name: "Punch Card",
+        preview: THEMES[0].backgroundGradient || THEMES[0].background,
+    },
+    { id: "minimal", name: "Classic Mono", color: "bg-zinc-700" },
     { id: "warm", name: "Classic Warm", color: "bg-gradient-to-br from-pink-300 to-pink-500" },
 ]
 
@@ -28,7 +30,10 @@ export function TemplateSelector({ selectedId, onSelect }: TemplateSelectorProps
                             : "border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
                     )}
                 >
-                    <div className={cn("absolute inset-0", t.color)}></div>
+                    <div
+                        className={cn("absolute inset-0", t.color)}
+                        style={t.preview ? { background: t.preview } : undefined}
+                    />
                     <div className="absolute bottom-2 left-0 w-full text-center text-xs font-medium text-white shadow-sm">
                         {t.name}
                     </div>

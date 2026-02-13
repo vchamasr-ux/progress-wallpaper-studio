@@ -16,7 +16,8 @@ const MOCK_DATA: WallpaperData = {
     targetDate: target.toISOString().split('T')[0],
     currentValue: 12,
     targetValue: 30,
-    templateId: 'punch-minimal'
+    templateId: 'punch-minimal',
+    themeId: 'miami-neon'
 }
 
 export function Hero() {

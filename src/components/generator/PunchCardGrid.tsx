@@ -1,19 +1,20 @@
 import React from "react"
-import { cn } from "@/lib/utils"
 
 interface PunchCardGridProps {
     total: number
     filled: number
-    color?: string
-    emptyColor?: string
+    filledColor: string   // hex, e.g. "#00E5FF"
+    emptyColor: string    // rgba, e.g. "rgba(255,255,255,0.18)"
+    glow?: string         // CSS box-shadow, e.g. "0 0 8px rgba(0,229,255,0.6)"
     shape?: 'circle' | 'square' | 'rounded'
 }
 
 export function PunchCardGrid({
     total,
     filled,
-    color = "bg-primary",
-    emptyColor = "bg-muted/30",
+    filledColor,
+    emptyColor,
+    glow,
     shape = 'circle'
 }: PunchCardGridProps) {
 
@@ -21,15 +22,20 @@ export function PunchCardGrid({
     const SAFE_TOTAL = Math.min(Math.max(1, total), 365)
     const isOverLimit = total > 60
 
-    // Grid calculation
-    // We want a nice aspect ratio approx 4-5 cols wide usually
-    const columns = total <= 15 ? 3 : total <= 30 ? 5 : 6
+    // Grid calculation – nice aspect ratio
+    const columns = total <= 15 ? 3 : total <= 30 ? 5 : total <= 50 ? 6 : 7
+
+    const borderRadius =
+        shape === 'circle' ? '50%' :
+            shape === 'rounded' ? '6px' :
+                '0px'
 
     return (
-        <div className="flex flex-col items-center gap-2">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
             <div
-                className="grid gap-3"
                 style={{
+                    display: 'grid',
+                    gap: '12px',
                     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
                 }}
             >
@@ -38,21 +44,22 @@ export function PunchCardGrid({
                     return (
                         <div
                             key={i}
-                            className={cn(
-                                "w-6 h-6 transition-all border-2",
-                                shape === 'circle' && "rounded-full",
-                                shape === 'rounded' && "rounded-md",
-                                shape === 'square' && "rounded-none",
-                                isFilled
-                                    ? cn(color, "border-transparent scale-100")
-                                    : cn(emptyColor, "border-muted-foreground/20 scale-90")
-                            )}
+                            style={{
+                                width: '24px',
+                                height: '24px',
+                                borderRadius,
+                                backgroundColor: isFilled ? filledColor : emptyColor,
+                                boxShadow: isFilled && glow ? glow : 'none',
+                                transform: isFilled ? 'scale(1)' : 'scale(0.85)',
+                                transition: 'all 0.2s ease',
+                                border: isFilled ? 'none' : '2px solid rgba(255,255,255,0.08)',
+                            }}
                         />
                     )
                 })}
             </div>
             {isOverLimit && (
-                <div className="text-[10px] opacity-70 mt-2 font-mono">
+                <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '8px', fontFamily: 'monospace' }}>
                     * Grid optimized for &lt;60. Current: {total}
                 </div>
             )}

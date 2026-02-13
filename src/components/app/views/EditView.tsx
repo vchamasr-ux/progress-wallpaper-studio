@@ -3,29 +3,30 @@ import { WallpaperData, GeneratorMode } from "@/lib/types"
 import { Goal } from "../AppContainer"
 import { ModeSelector } from "@/components/generator/ModeSelector"
 import { TemplateSelector } from "@/components/generator/TemplateSelector"
+import { ThemeSelector } from "../ThemeSelector"
 import { PreviewPanel } from "@/components/generator/PreviewPanel"
 import { Button } from "@/components/ui/button"
 import { Save, ArrowRight } from "lucide-react"
+
+// Templates
 import { MinimalTemplate } from "@/components/generator/templates/MinimalTemplate"
 import { WarmTemplate } from "@/components/generator/templates/WarmTemplate"
 import { AuraTemplate } from "@/components/generator/templates/AuraTemplate"
 import { GlitchTemplate } from "@/components/generator/templates/GlitchTemplate"
-
-import { PunchMinimal } from "@/components/generator/templates/PunchMinimal"
-import { PunchWarm } from "@/components/generator/templates/PunchWarm"
-import { PunchNeon } from "@/components/generator/templates/PunchNeon"
+import { PunchCardTemplate } from "@/components/generator/templates/PunchCardTemplate"
 
 const TEMPLATE_MAP: Record<string, React.ComponentType<any>> = {
-    "punch-minimal": PunchMinimal,
-    "punch-warm": PunchWarm,
-    "punch-neon": PunchNeon,
+    "punch-card": PunchCardTemplate,
     minimal: MinimalTemplate,
     warm: WarmTemplate,
     aura: AuraTemplate,
     glitch: GlitchTemplate,
-    // Add others if implemented, else fallback
     bold: MinimalTemplate,
-    neon: MinimalTemplate
+    neon: MinimalTemplate,
+    // Legacy punch IDs → redirect to universal
+    "punch-minimal": PunchCardTemplate,
+    "punch-warm": PunchCardTemplate,
+    "punch-neon": PunchCardTemplate,
 }
 
 interface EditViewProps {
@@ -50,18 +51,18 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
         setData((prev) => ({ ...prev, mode: newMode }))
     }
 
-    const SelectedTemplate = TEMPLATE_MAP[data.templateId] || PunchMinimal
+    const SelectedTemplate = TEMPLATE_MAP[data.templateId] || PunchCardTemplate
 
     return (
-        <div className="grid gap-8 pb-20"> {/* pb-20 for safe area if we had bottom nav, but good spacing anyway */}
+        <div className="grid gap-8 pb-20">
             <div className="space-y-6">
-                {/* Preview Section - Sticky on Desktop, visible on Mobile */}
+                {/* Preview Section */}
                 <div className="sticky top-0 bg-background/80 backdrop-blur-md z-10 py-4 -mx-4 px-4 border-b lg:static lg:bg-transparent lg:border-0 lg:p-0">
                     <PreviewPanel data={data} customTemplate={SelectedTemplate} />
                 </div>
 
                 <div className="space-y-6 rounded-xl border bg-card p-6 shadow-sm">
-                    {/* Inputs */}
+                    {/* Goal Title */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium leading-none">Goal Title</label>
                         <input
@@ -69,7 +70,7 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
                             value={data.title}
                             onChange={(e) => updateField("title", e.target.value)}
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="e.g. Trip to Japan"
+                            placeholder="e.g. Read 12 Books"
                         />
                     </div>
 
@@ -118,6 +119,13 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
                         </div>
                     )}
 
+                    {/* Theme Selector */}
+                    <ThemeSelector
+                        selectedThemeId={data.themeId || "miami-neon"}
+                        onSelect={(id) => updateField("themeId", id)}
+                    />
+
+                    {/* Template Selector (for legacy / classic templates) */}
                     <div className="space-y-3 pt-2">
                         <label className="text-sm font-medium leading-none">Template</label>
                         <TemplateSelector
@@ -146,23 +154,6 @@ export function EditView({ initialGoal, onSave, onGenerate }: EditViewProps) {
                     </Button>
                 </div>
             </div>
-
-            {/* Hidden Renderer for Export (Needed for Download View) 
-                Actually, Prototype says "Generate pack runs export...". 
-                Does this mean we generate HERE?
-                The prompt says "Generate pack runs export generation and navigates to Downloads view."
-                Usually we can't generate and navigate instantly if generation takes time.
-                We might need to trigger generation in the parent or pass a flag.
-                For V0, we can put the hidden renderer in EditView OR DownloadsView.
-                If we put it in DownloadsView, we can render the preview there too.
-                Let's stick to the prompt: "Generate pack runs export generation".
-                
-                Correction: To keep it responsive, let's allow "Next" to just go to Downloads, 
-                and DownloadsView renders the hidden canvas and offers buttons. 
-                Generating ALL zips on "Next" might be slow (1-2s).
-                The user prompt says: "Export Center: Show separate download options".
-                So DownloadsView is where the action happens.
-            */}
         </div>
     )
 }

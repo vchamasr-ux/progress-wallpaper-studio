@@ -11,6 +11,7 @@ export interface WallpaperData {
     targetValue: number
     // Common
     templateId: string
+    themeId: string
 }
 
 export interface TemplateProps {
@@ -27,5 +28,6 @@ export const INITIAL_DATA: WallpaperData = {
     targetDate: new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0], // 30 days from now
     currentValue: 0,
     targetValue: 100,
-    templateId: "minimal",
+    templateId: "punch-card",
+    themeId: "miami-neon",
 }

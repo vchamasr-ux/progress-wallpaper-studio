@@ -36,14 +36,17 @@ export function MinimalTemplate({ data, width = 1080, height = 1920, scale = 1, 
                     </div>
                 ) : (
                     <div style={{ position: "relative", width: width * 0.6, height: width * 0.6 }}>
-                        {/* Simple SVG Ring */}
-                        <ProgressRing
-                            radius={45}
-                            stroke={10}
-                            progress={Math.min(100, (data.currentValue / (data.targetValue || 1)) * 100)}
-                            color="white"
-                            trackColor="#333"
-                        />
+                        {/* Progress Ring — fills container */}
+                        <div style={{ position: "absolute", inset: 0 }}>
+                            <ProgressRing
+                                radius={45}
+                                stroke={8}
+                                progress={Math.min(100, (data.currentValue / (data.targetValue || 1)) * 100)}
+                                color="white"
+                                trackColor="#333"
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                        </div>
                         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
                             <span style={{ fontSize: baseFontSize * 2, fontWeight: 900 }}>{Math.round((data.currentValue / (data.targetValue || 1)) * 100)}%</span>
                             <span style={{ fontSize: baseFontSize * 0.8, opacity: 0.7 }}>{data.currentValue} / {data.targetValue}</span>

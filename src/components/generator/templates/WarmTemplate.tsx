@@ -7,7 +7,7 @@ import { WallpaperData } from "@/lib/types"
 // High contrast text (White with shadow or dark with light bg? Warm usually implies light/sunny)
 // Prototype spec: "soft sunset gradient (pink/orange), readable high-contrast text, clean."
 
-export function WarmTemplate({ data, width, height, watermark }: { data: WallpaperData, width: number, height: number, watermark?: boolean }) {
+export function WarmTemplate({ data, width, height, scale, watermark }: { data: WallpaperData, width: number, height: number, scale?: number, watermark?: boolean }) {
     const isCountdown = data.mode === 'countdown'
 
     // Calculate progress/days
@@ -47,7 +47,8 @@ export function WarmTemplate({ data, width, height, watermark }: { data: Wallpap
         color: '#fff', // White text on pink/orange is usually okay if drop shadow
         fontFamily: 'Inter, sans-serif',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        ...(scale ? { transform: `scale(${scale})`, transformOrigin: 'top left' } : {})
     }
 
     return (

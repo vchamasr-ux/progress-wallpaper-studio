@@ -21,10 +21,16 @@ export function ProgressRing({
     const circumference = normalizedRadius * 2 * Math.PI
     const strokeDashoffset = circumference - (progress / 100) * circumference
 
+    // When style is provided (e.g. width: 100%, height: 100%), don't set fixed
+    // HTML width/height attributes — the viewBox handles internal coordinates
+    // and CSS handles actual sizing.
+    const sizeProps = style
+        ? {}
+        : { height: radius * 2, width: radius * 2 }
+
     return (
         <svg
-            height={radius * 2}
-            width={radius * 2}
+            {...sizeProps}
             style={{ transform: "rotate(-90deg)", ...style }}
             viewBox={`0 0 ${radius * 2} ${radius * 2}`}
         >

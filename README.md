@@ -12,16 +12,9 @@ yarn dev
 pnpm dev
 # or
 bun dev
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Analytics
 
@@ -33,7 +26,6 @@ NEXT_PUBLIC_GA4_ID=G-XXXXXXXXXX
 
 If this variable is missing, analytics will not be initialized. In development, events are logged to the console.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.

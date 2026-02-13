@@ -2,7 +2,7 @@ import { WallpaperData } from "@/lib/types"
 import { ProgressRing } from "../ProgressRing"
 import { CSSProperties } from "react"
 
-export function AuraTemplate({ data, width, height, watermark }: { data: WallpaperData, width: number, height: number, watermark?: boolean }) {
+export function AuraTemplate({ data, width, height, scale, watermark }: { data: WallpaperData, width: number, height: number, scale?: number, watermark?: boolean }) {
     const isCountdown = data.mode === 'countdown'
 
     // Calculate progress/days
@@ -46,7 +46,8 @@ export function AuraTemplate({ data, width, height, watermark }: { data: Wallpap
         color: '#fff',
         fontFamily: 'Outfit, sans-serif', // Use a rounder font if available, else standard
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        ...(scale ? { transform: `scale(${scale})`, transformOrigin: 'top left' } : {})
     }
 
     return (

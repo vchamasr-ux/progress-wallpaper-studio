@@ -26,8 +26,9 @@ export function PunchWarm({ data, width, height, watermark }: { data: WallpaperD
                 <PunchCardGrid
                     total={data.targetValue}
                     filled={data.currentValue}
-                    color="bg-white"
-                    emptyColor="bg-white/30"
+                    filledColor="#ffffff"
+                    emptyColor="rgba(255,255,255,0.3)"
+
                     shape="rounded"
                 />
             </div>

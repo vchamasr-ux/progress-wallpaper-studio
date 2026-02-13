@@ -2,7 +2,7 @@ import { WallpaperData } from "@/lib/types"
 import { ProgressRing } from "../ProgressRing"
 import { CSSProperties } from "react"
 
-export function GlitchTemplate({ data, width, height, watermark }: { data: WallpaperData, width: number, height: number, watermark?: boolean }) {
+export function GlitchTemplate({ data, width, height, scale, watermark }: { data: WallpaperData, width: number, height: number, scale?: number, watermark?: boolean }) {
     const isCountdown = data.mode === 'countdown'
 
     // Calculate progress/days
@@ -41,7 +41,8 @@ export function GlitchTemplate({ data, width, height, watermark }: { data: Wallp
         color: '#00ff41', // Matrix Green
         fontFamily: 'Courier New, monospace',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        ...(scale ? { transform: `scale(${scale})`, transformOrigin: 'top left' } : {})
     }
 
     return (

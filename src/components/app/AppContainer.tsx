@@ -5,6 +5,7 @@ import { GoalsView } from "./views/GoalsView"
 import { EditView } from "./views/EditView"
 import { DownloadsView } from "./views/DownloadsView"
 import { WallpaperData, GeneratorMode } from "@/lib/types"
+import { Preset } from "@/lib/presets"
 
 export type AppView = 'goals' | 'edit' | 'downloads'
 
@@ -23,7 +24,8 @@ const SEED_GOALS: Goal[] = [
         currentValue: 12,
         targetValue: 30,
         targetDate: "",
-        templateId: "punch-minimal" // Updated to new default
+        templateId: "punch-card",
+        themeId: "electric-lime",
     },
     {
         id: "seed-2",
@@ -33,25 +35,19 @@ const SEED_GOALS: Goal[] = [
         currentValue: 3,
         targetValue: 12,
         targetDate: "",
-        templateId: "punch-warm"
+        templateId: "punch-card",
+        themeId: "grape-soda",
     },
     {
         id: "seed-3",
         createdAt: Date.now() - 2000,
         mode: "countdown",
-        title: "Bali Trip", // Countdown should ideally work with punch too?
-        // PunchCardGrid logic: if countdown, we need total days vs days passed?
-        // Current Punch templates use data.targetValue and data.currentValue.
-        // If mode is countdown, we need to map days left to these?
-        // The templates currently just render the grid based on targetValue/currentValue.
-        // For countdowns, we might want to stick to a different template or map it.
-        // Let's stick to "Trip Countdown" using "warm" (Classic) for now as punch cards are best for progress.
-        // Or better: "punch-neon" with manual mapping?
-        // Let's keep one classic for variety: "warm".
+        title: "Bali Trip",
         currentValue: 0,
         targetValue: 100,
-        targetDate: "2024-12-31",
-        templateId: "warm"
+        targetDate: new Date(Date.now() + 86400000 * 60).toISOString().split('T')[0],
+        templateId: "punch-card",
+        themeId: "ocean-pop",
     }
 ]
 
@@ -60,23 +56,40 @@ export function AppContainer() {
     const [activeView, setActiveView] = useState<AppView>('goals')
     const [goals, setGoals] = useState<Goal[]>(SEED_GOALS)
     const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null)
-    const [generatedZipBlob, setGeneratedZipBlob] = useState<Blob | null>(null) // Temporary hold for download view? Or re-generate?
-    // Prototype spec says: Edit -> Generate -> Downloads. 
-    // Usually we pass the data to Downloads view to generate/display.
 
-    const activeGoal = goals.find(g => g.id === selectedGoalId) || goals[0] // Fallback safe
+    const activeGoal = goals.find(g => g.id === selectedGoalId) || goals[0]
 
     // ACTIONS
     const handleCreateGoal = () => {
         const newGoal: Goal = {
             id: crypto.randomUUID(),
             createdAt: Date.now(),
-            mode: "countdown",
+            mode: "progress",
             title: "New Goal",
             currentValue: 0,
             targetValue: 10,
             targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            templateId: "minimal"
+            templateId: "punch-card",
+            themeId: "miami-neon",
+        }
+        setGoals([newGoal, ...goals])
+        setSelectedGoalId(newGoal.id)
+        setActiveView('edit')
+    }
+
+    const handleCreateFromPreset = (preset: Preset) => {
+        const newGoal: Goal = {
+            id: crypto.randomUUID(),
+            createdAt: Date.now(),
+            mode: preset.mode,
+            title: preset.title,
+            currentValue: 0,
+            targetValue: preset.targetValue,
+            targetDate: preset.defaultDaysFromNow
+                ? new Date(Date.now() + preset.defaultDaysFromNow * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                : "",
+            templateId: "punch-card",
+            themeId: preset.defaultThemeId,
         }
         setGoals([newGoal, ...goals])
         setSelectedGoalId(newGoal.id)
@@ -103,18 +116,14 @@ export function AppContainer() {
         setActiveView('goals')
     }
 
-    // This is called when user clicks "Generate" in Edit view
     const handleGenerate = (updatedGoal: Goal) => {
-        // Save first? Prototype says "Save commits edits... return to Goals". 
-        // "Generate pack runs export... navigates to Downloads". 
-        // Implies we save state AND go to downloads.
         setGoals(goals.map(g => g.id === updatedGoal.id ? updatedGoal : g))
         setActiveView('downloads')
     }
 
     return (
         <div className="max-w-md mx-auto min-h-screen bg-background border-x shadow-xl flex flex-col">
-            {/* TAB NAV (Top or Bottom? "Segmented tabs" usually implies top or inline. Let's do Top for Studio feel) */}
+            {/* TAB NAV */}
             <div className="p-4 border-b bg-card z-10 sticky top-0">
                 <div className="grid grid-cols-3 p-1 bg-muted rounded-lg">
                     {(['goals', 'edit', 'downloads'] as AppView[]).map(view => (
@@ -140,25 +149,25 @@ export function AppContainer() {
                         onCreate={handleCreateGoal}
                         onSelect={handleSelectGoal}
                         onDelete={handleDeleteGoal}
+                        onCreateFromPreset={handleCreateFromPreset}
                     />
                 )}
 
                 {activeView === 'edit' && selectedGoalId && (
                     <EditView
-                        initialGoal={activeGoal} // Use activeGoal derived from selectedGoalId
+                        initialGoal={activeGoal}
                         onSave={handleSaveGoal}
                         onGenerate={handleGenerate}
                     />
                 )}
 
-                {/* If edit selected but no ID (shouldn't happen), show fallback or redirect */}
                 {activeView === 'edit' && !selectedGoalId && (
                     <div className="text-center py-10 text-muted-foreground">Please select a goal first.</div>
                 )}
 
                 {activeView === 'downloads' && (
                     <DownloadsView
-                        goal={activeGoal} // Pass the currently selected goal to generate for
+                        goal={activeGoal}
                     />
                 )}
             </div>

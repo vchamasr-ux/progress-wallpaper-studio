@@ -33,8 +33,9 @@ export function PunchMinimal({ data, width, height, watermark }: { data: Wallpap
                 <PunchCardGrid
                     total={data.targetValue}
                     filled={data.currentValue}
-                    color="bg-white"
-                    emptyColor="bg-zinc-800"
+                    filledColor="#ffffff"
+                    emptyColor="rgba(63,63,70,1)"
+
                     shape="circle"
                 />
             </div>

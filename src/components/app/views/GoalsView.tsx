@@ -1,4 +1,6 @@
 import { Goal } from "../AppContainer"
+import { Preset } from "@/lib/presets"
+import { PresetGallery } from "../PresetGallery"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2, ChevronRight } from "lucide-react"
 
@@ -7,15 +9,29 @@ interface GoalsViewProps {
     onCreate: () => void
     onSelect: (id: string) => void
     onDelete: (id: string) => void
+    onCreateFromPreset: (preset: Preset) => void
 }
 
-export function GoalsView({ goals, onCreate, onSelect, onDelete }: GoalsViewProps) {
+export function GoalsView({ goals, onCreate, onSelect, onDelete, onCreateFromPreset }: GoalsViewProps) {
     return (
         <div className="space-y-6">
+            {/* Preset Gallery — Quick Start */}
+            <PresetGallery onSelectPreset={onCreateFromPreset} />
+
+            {/* Divider */}
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center">
+                    <span className="bg-background px-3 text-xs text-muted-foreground uppercase tracking-wider">Your Goals</span>
+                </div>
+            </div>
+
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">My Goals</h1>
+                <h1 className="text-xl font-bold">My Goals</h1>
                 <Button onClick={onCreate} size="sm" className="gap-2">
-                    <Plus className="w-4 h-4" /> New Goal
+                    <Plus className="w-4 h-4" /> Custom Goal
                 </Button>
             </div>
 
@@ -28,9 +44,9 @@ export function GoalsView({ goals, onCreate, onSelect, onDelete }: GoalsViewProp
                     >
                         <div className="space-y-1">
                             <h3 className="font-semibold">{goal.title}</h3>
-                            <p className="text-sm text-muted-foreground capitalize">{goal.mode} • {goal.templateId}</p>
+                            <p className="text-sm text-muted-foreground capitalize">{goal.mode}</p>
 
-                            {/* Mini Progress Bar or Status */}
+                            {/* Mini Progress Bar */}
                             {goal.mode === 'progress' && (
                                 <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden mt-2">
                                     <div
@@ -60,7 +76,7 @@ export function GoalsView({ goals, onCreate, onSelect, onDelete }: GoalsViewProp
 
                 {goals.length === 0 && (
                     <div className="text-center py-10 text-muted-foreground border-2 border-dashed rounded-xl">
-                        No goals yet. Create one to get started!
+                        No goals yet. Pick a preset above or create a custom one!
                     </div>
                 )}
             </div>

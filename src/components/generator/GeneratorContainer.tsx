@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Download, Loader2, Lock, Check } from "lucide-react"
 import { generateExport } from "@/lib/generator"
 import { MinimalTemplate } from "./templates/MinimalTemplate"
+import { PunchCardTemplate } from "./templates/PunchCardTemplate"
 import { DownloadHub } from "./DownloadHub"
 import { track } from "@/lib/analytics"
 
